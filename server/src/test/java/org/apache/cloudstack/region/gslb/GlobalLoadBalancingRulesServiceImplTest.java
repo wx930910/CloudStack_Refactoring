@@ -34,7 +34,6 @@ import org.apache.cloudstack.framework.config.dao.ConfigurationDao;
 import org.apache.cloudstack.region.RegionVO;
 import org.apache.cloudstack.region.dao.RegionDao;
 import org.apache.log4j.Logger;
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,8 +70,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 	public void setUp() {
 		Account account = new AccountVO("testaccount", 1, "networkdomain", (short) 0, UUID.randomUUID().toString());
 
-		UserVO user = new UserVO(1, "testuser", "password", "firstname", "lastName", "email", "timezone", UUID.randomUUID().toString(),
-				User.Source.UNKNOWN);
+		UserVO user = new UserVO(1, "testuser", "password", "firstname", "lastName", "email", "timezone",
+				UUID.randomUUID().toString(), User.Source.UNKNOWN);
 
 		CallContext.register(user, account);
 	}
@@ -203,7 +202,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		when(gslbServiceImpl._accountMgr.getAccount(anyLong())).thenReturn(account);
 
 		gslbServiceImpl._gslbRuleDao = Mockito.mock(GlobalLoadBalancerRuleDao.class);
-		when(gslbServiceImpl._gslbRuleDao.persist(any(GlobalLoadBalancerRuleVO.class))).thenReturn(new GlobalLoadBalancerRuleVO());
+		when(gslbServiceImpl._gslbRuleDao.persist(any(GlobalLoadBalancerRuleVO.class)))
+				.thenReturn(new GlobalLoadBalancerRuleVO());
 		gslbServiceImpl._gslbLbMapDao = Mockito.mock(GlobalLoadBalancerLbRuleMapDao.class);
 
 		gslbServiceImpl._regionDao = Mockito.mock(RegionDao.class);
@@ -267,7 +267,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		when(gslbServiceImpl._accountMgr.getAccount(anyLong())).thenReturn(account);
 
 		gslbServiceImpl._gslbRuleDao = Mockito.mock(GlobalLoadBalancerRuleDao.class);
-		when(gslbServiceImpl._gslbRuleDao.persist(any(GlobalLoadBalancerRuleVO.class))).thenReturn(new GlobalLoadBalancerRuleVO());
+		when(gslbServiceImpl._gslbRuleDao.persist(any(GlobalLoadBalancerRuleVO.class)))
+				.thenReturn(new GlobalLoadBalancerRuleVO());
 		gslbServiceImpl._gslbLbMapDao = Mockito.mock(GlobalLoadBalancerLbRuleMapDao.class);
 
 		gslbServiceImpl._regionDao = Mockito.mock(RegionDao.class);
@@ -331,7 +332,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		when(gslbServiceImpl._accountMgr.getAccount(anyLong())).thenReturn(account);
 
 		gslbServiceImpl._gslbRuleDao = Mockito.mock(GlobalLoadBalancerRuleDao.class);
-		when(gslbServiceImpl._gslbRuleDao.persist(any(GlobalLoadBalancerRuleVO.class))).thenReturn(new GlobalLoadBalancerRuleVO());
+		when(gslbServiceImpl._gslbRuleDao.persist(any(GlobalLoadBalancerRuleVO.class)))
+				.thenReturn(new GlobalLoadBalancerRuleVO());
 		gslbServiceImpl._gslbLbMapDao = Mockito.mock(GlobalLoadBalancerLbRuleMapDao.class);
 
 		gslbServiceImpl._regionDao = Mockito.mock(RegionDao.class);
@@ -395,7 +397,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		when(gslbServiceImpl._accountMgr.getAccount(anyLong())).thenReturn(account);
 
 		gslbServiceImpl._gslbRuleDao = Mockito.mock(GlobalLoadBalancerRuleDao.class);
-		when(gslbServiceImpl._gslbRuleDao.persist(any(GlobalLoadBalancerRuleVO.class))).thenReturn(new GlobalLoadBalancerRuleVO());
+		when(gslbServiceImpl._gslbRuleDao.persist(any(GlobalLoadBalancerRuleVO.class)))
+				.thenReturn(new GlobalLoadBalancerRuleVO());
 		gslbServiceImpl._gslbLbMapDao = Mockito.mock(GlobalLoadBalancerLbRuleMapDao.class);
 
 		gslbServiceImpl._regionDao = Mockito.mock(RegionDao.class);
@@ -530,7 +533,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbServiceImpl._ipAddressDao = Mockito.mock(IPAddressDao.class);
 		gslbServiceImpl._agentMgr = Mockito.mock(AgentManager.class);
 
-		AssignToGlobalLoadBalancerRuleCmd assignCmd = new AssignToGlobalLoadBalancerRuleCmdExtn();
+		AssignToGlobalLoadBalancerRuleCmd assignCmd = Mockito.spy(AssignToGlobalLoadBalancerRuleCmd.class);
+		Mockito.doReturn((long) 1).when(assignCmd).getEntityOwnerId();
 		Class<?> _class = assignCmd.getClass().getSuperclass();
 
 		Account account = new AccountVO("testaccount", 1, "networkdomain", (short) 0, UUID.randomUUID().toString());
@@ -540,8 +544,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbRuleId.setAccessible(true);
 		gslbRuleId.set(assignCmd, new Long(1));
 
-		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule", "test-domain", "roundrobin", "sourceip",
-				"tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
+		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule",
+				"test-domain", "roundrobin", "sourceip", "tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
 		when(gslbServiceImpl._gslbRuleDao.findById(new Long(1))).thenReturn(gslbRule);
 
 		LoadBalancerVO lbRule = new LoadBalancerVO();
@@ -603,8 +607,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbRuleId.setAccessible(true);
 		gslbRuleId.set(assignCmd, new Long(1));
 
-		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule", "test-domain", "roundrobin", "sourceip",
-				"tcp", 1, 3, 1, GlobalLoadBalancerRule.State.Active);
+		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule",
+				"test-domain", "roundrobin", "sourceip", "tcp", 1, 3, 1, GlobalLoadBalancerRule.State.Active);
 		when(gslbServiceImpl._gslbRuleDao.findById(new Long(1))).thenReturn(gslbRule);
 
 		LoadBalancerVO lbRule1 = new LoadBalancerVO();
@@ -688,8 +692,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbRuleId.setAccessible(true);
 		gslbRuleId.set(assignCmd, new Long(1));
 
-		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule", "test-domain", "roundrobin", "sourceip",
-				"tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Revoke);
+		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule",
+				"test-domain", "roundrobin", "sourceip", "tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Revoke);
 		when(gslbServiceImpl._gslbRuleDao.findById(new Long(1))).thenReturn(gslbRule);
 
 		LoadBalancerVO lbRule = new LoadBalancerVO();
@@ -748,8 +752,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbRuleId.setAccessible(true);
 		gslbRuleId.set(removeFromGslbCmd, new Long(1));
 
-		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule", "test-domain", "roundrobin", "sourceip",
-				"tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
+		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule",
+				"test-domain", "roundrobin", "sourceip", "tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
 		when(gslbServiceImpl._gslbRuleDao.findById(new Long(1))).thenReturn(gslbRule);
 
 		LoadBalancerVO lbRule = new LoadBalancerVO();
@@ -820,8 +824,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbRuleId.setAccessible(true);
 		gslbRuleId.set(removeFromGslbCmd, new Long(1));
 
-		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule", "test-domain", "roundrobin", "sourceip",
-				"tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
+		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule",
+				"test-domain", "roundrobin", "sourceip", "tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
 		when(gslbServiceImpl._gslbRuleDao.findById(new Long(1))).thenReturn(gslbRule);
 
 		LoadBalancerVO lbRule = new LoadBalancerVO();
@@ -881,8 +885,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbRuleId.setAccessible(true);
 		gslbRuleId.set(removeFromGslbCmd, new Long(1));
 
-		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule", "test-domain", "roundrobin", "sourceip",
-				"tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
+		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule",
+				"test-domain", "roundrobin", "sourceip", "tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
 		when(gslbServiceImpl._gslbRuleDao.findById(new Long(1))).thenReturn(gslbRule);
 
 		Field lbRules = _class.getDeclaredField("loadBalancerRulesIds");
@@ -925,8 +929,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbRuleId.setAccessible(true);
 		gslbRuleId.set(deleteCmd, new Long(1));
 
-		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule", "test-domain", "roundrobin", "sourceip",
-				"tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
+		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule",
+				"test-domain", "roundrobin", "sourceip", "tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
 		when(gslbServiceImpl._gslbRuleDao.findById(new Long(1))).thenReturn(gslbRule);
 
 		GlobalLoadBalancerLbRuleMapVO gslbLbMap = new GlobalLoadBalancerLbRuleMapVO();
@@ -961,7 +965,7 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbServiceImpl._ipAddressDao = Mockito.mock(IPAddressDao.class);
 		gslbServiceImpl._agentMgr = Mockito.mock(AgentManager.class);
 
-		DeleteGlobalLoadBalancerRuleCmd deleteCmd = new MockDeleteGlobalLoadBalancerRuleCmdExtn().mockedDeleteGlobalLoadBalancerRuleCmdExtn;
+		DeleteGlobalLoadBalancerRuleCmd deleteCmd = new DeleteGlobalLoadBalancerRuleCmdExtn();
 		Class<?> _class = deleteCmd.getClass().getSuperclass();
 
 		Account account = new AccountVO("testaccount", 1, "networkdomain", (short) 0, UUID.randomUUID().toString());
@@ -971,8 +975,8 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		gslbRuleId.setAccessible(true);
 		gslbRuleId.set(deleteCmd, new Long(1));
 
-		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule", "test-domain", "roundrobin", "sourceip",
-				"tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
+		GlobalLoadBalancerRuleVO gslbRule = new GlobalLoadBalancerRuleVO("test-gslb-rule", "test-gslb-rule",
+				"test-domain", "roundrobin", "sourceip", "tcp", 1, 1, 1, GlobalLoadBalancerRule.State.Active);
 		when(gslbServiceImpl._gslbRuleDao.findById(new Long(1))).thenReturn(gslbRule);
 
 		GlobalLoadBalancerLbRuleMapVO gslbLmMap = new GlobalLoadBalancerLbRuleMapVO(1, 1, 1);
@@ -996,43 +1000,11 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		}
 	}
 
-	public class MockCreateGlobalLoadBalancerRuleCmdExtn {
-		public CreateGlobalLoadBalancerRuleCmd mockedCreateGlobalLoadBalancerRuleCmdExtn;
-
-		public MockCreateGlobalLoadBalancerRuleCmdExtn() {
-			this.mockedCreateGlobalLoadBalancerRuleCmdExtn = EasyMock.partialMockBuilder(DeleteGlobalLoadBalancerRuleCmd.class)
-					.addMockedMethod("getEntityOwnerId").createMock();
-			mockGetEntityOwnerId();
-			EasyMock.replay(this.mockedCreateGlobalLoadBalancerRuleCmdExtn);
-		}
-
-		private void mockGetEntityOwnerId() {
-			EasyMock.expect(this.mockedCreateGlobalLoadBalancerRuleCmdExtn.getEntityOwnerId()).andReturn((long) 1);
-		}
-
-	}
-
 	public class AssignToGlobalLoadBalancerRuleCmdExtn extends AssignToGlobalLoadBalancerRuleCmd {
 		@Override
 		public long getEntityOwnerId() {
 			return 1;
 		}
-	}
-
-	public class MockAssignToGlobalLoadBalancerRuleCmdExtn {
-		public AssignToGlobalLoadBalancerRuleCmd mockedAssignToGlobalLoadBalancerRuleCmdExtn;
-
-		public MockAssignToGlobalLoadBalancerRuleCmdExtn() {
-			this.mockedAssignToGlobalLoadBalancerRuleCmdExtn = EasyMock.partialMockBuilder(DeleteGlobalLoadBalancerRuleCmd.class)
-					.addMockedMethod("getEntityOwnerId").createMock();
-			mockGetEntityOwnerId();
-			EasyMock.replay(this.mockedAssignToGlobalLoadBalancerRuleCmdExtn);
-		}
-
-		private void mockGetEntityOwnerId() {
-			EasyMock.expect(this.mockedAssignToGlobalLoadBalancerRuleCmdExtn.getEntityOwnerId()).andReturn((long) 1);
-		}
-
 	}
 
 	public class RemoveFromGlobalLoadBalancerRuleCmdExtn extends RemoveFromGlobalLoadBalancerRuleCmd {
@@ -1042,42 +1014,10 @@ public class GlobalLoadBalancingRulesServiceImplTest extends TestCase {
 		}
 	}
 
-	public class MockRemoveFromGlobalLoadBalancerRuleCmdExtn {
-		public RemoveFromGlobalLoadBalancerRuleCmd mockedRemoveFromGlobalLoadBalancerRuleCmdExtn;
-
-		public MockRemoveFromGlobalLoadBalancerRuleCmdExtn() {
-			this.mockedRemoveFromGlobalLoadBalancerRuleCmdExtn = EasyMock.partialMockBuilder(DeleteGlobalLoadBalancerRuleCmd.class)
-					.addMockedMethod("getEntityOwnerId").createMock();
-			mockGetEntityOwnerId();
-			EasyMock.replay(this.mockedRemoveFromGlobalLoadBalancerRuleCmdExtn);
-		}
-
-		private void mockGetEntityOwnerId() {
-			EasyMock.expect(this.mockedRemoveFromGlobalLoadBalancerRuleCmdExtn.getEntityOwnerId()).andReturn((long) 1);
-		}
-
-	}
-
 	public class DeleteGlobalLoadBalancerRuleCmdExtn extends DeleteGlobalLoadBalancerRuleCmd {
 		@Override
 		public long getEntityOwnerId() {
 			return 1;
 		}
 	}
-
-	public class MockDeleteGlobalLoadBalancerRuleCmdExtn {
-		public DeleteGlobalLoadBalancerRuleCmd mockedDeleteGlobalLoadBalancerRuleCmdExtn;
-
-		public MockDeleteGlobalLoadBalancerRuleCmdExtn() {
-			this.mockedDeleteGlobalLoadBalancerRuleCmdExtn = EasyMock.partialMockBuilder(DeleteGlobalLoadBalancerRuleCmd.class)
-					.addMockedMethod("getEntityOwnerId").createMock();
-			mockGetEntityOwnerId();
-			EasyMock.replay(this.mockedDeleteGlobalLoadBalancerRuleCmdExtn);
-		}
-
-		private void mockGetEntityOwnerId() {
-			EasyMock.expect(this.mockedDeleteGlobalLoadBalancerRuleCmdExtn.getEntityOwnerId()).andReturn((long) 1);
-		}
-	}
-
 }

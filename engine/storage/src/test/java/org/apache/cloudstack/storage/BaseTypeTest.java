@@ -19,28 +19,30 @@ package org.apache.cloudstack.storage;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import com.google.common.testing.EqualsTester;
 
 public class BaseTypeTest {
 	@Test
 	public void testEquals() {
-		new EqualsTester().addEqualityGroup(new TestType("a"), new TestType("A")).addEqualityGroup(new TestType("Bd"), new TestType("bD"))
-				.testEquals();
+
+		new EqualsTester().addEqualityGroup(new TestType("a"), new TestType("A"))
+				.addEqualityGroup(new TestType("Bd"), new TestType("bD")).testEquals();
+	}
+
+	private BaseType mockBaseType(String t) {
+		BaseType res = Mockito.mock(BaseType.class, Mockito.CALLS_REAL_METHODS);
+		Mockito.when(res.toString()).thenAnswer(invo -> {
+			return t;
+		});
+		return res;
 	}
 
 	@Test
 	public void testIsSameTypeAs() {
 		Assert.assertTrue("'a' and 'A' should be considdered the same type", new TestType("a").isSameTypeAs("A"));
-		Assert.assertTrue("'B' and 'b' should be considdered the same address", new TestType("B").isSameTypeAs(new TestType("b")));
-	}
-
-	@Test
-	public void testEqualsWithMock() {
-		new EqualsTester().addEqualityGroup(new MockTestType("a").MockedTestType, new MockTestType("A").MockedTestType)
-				.addEqualityGroup(new MockTestType("Bd").MockedTestType, new MockTestType("bD").MockedTestType).testEquals();
+		Assert.assertTrue("'B' and 'b' should be considdered the same address",
+				new TestType("B").isSameTypeAs(new TestType("b")));
 	}
 
 	class TestType extends BaseType {
@@ -55,26 +57,4 @@ public class BaseTypeTest {
 			return content;
 		}
 	}
-
-	class MockTestType {
-		public BaseType MockedTestType;
-		String content;
-
-		public MockTestType(String t) {
-			content = t;
-			this.MockedTestType = Mockito.mock(BaseType.class, Mockito.CALLS_REAL_METHODS);
-			mockToString();
-		}
-
-		private void mockToString() {
-			Mockito.when(this.MockedTestType.toString()).thenAnswer(new Answer<Object>() {
-				@Override
-				public Object answer(InvocationOnMock invocation) {
-					return content;
-				}
-			});
-		}
-
-	}
-
 }

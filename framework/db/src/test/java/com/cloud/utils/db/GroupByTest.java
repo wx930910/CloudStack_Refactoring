@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.easymock.EasyMock;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.cloud.utils.Pair;
 import com.cloud.utils.db.SearchCriteria.Func;
@@ -42,8 +42,9 @@ public class GroupByTest {
 	public void testToSql() {
 		// Prepare
 		final StringBuilder sb = new StringBuilder("BASE");
-		final GroupByExtension groupBy = new GroupByExtension(new SearchBaseExtension(String.class, String.class));
-
+		final GroupBy<SearchBaseExtension, String, String> groupBy = Mockito.spy(
+				new GroupBy<SearchBaseExtension, String, String>(new SearchBaseExtension(String.class, String.class)));
+		Mockito.doNothing().when(groupBy).init(Mockito.any());
 		final Attribute att = new Attribute("TEST_TABLE", "TEST_COLUMN");
 		final Attribute att2 = new Attribute("TEST_TABLE2", "TEST_COLUMN2");
 		final Pair<Func, Attribute> pair1 = new Pair<>(SearchCriteria.Func.FIRST, att);
@@ -96,24 +97,6 @@ public class GroupByTest {
 
 		assertTrue("It didn't create the expected SQL query.", str.toString().equals(FULL_EXPECTED_QUERY_2));
 		assertTrue("Incorrect group by parameter list", groupByValues.size() == 1);
-	}
-
-}
-
-class MockedGroupByExtension {
-	GroupBy<SearchBaseExtension, String, String> mockedGroupByExtension;
-
-	public MockedGroupByExtension(final SearchBaseExtension builder) {
-		this.mockedGroupByExtension = EasyMock.partialMockBuilder(GroupBy.class).withConstructor(builder).addMockedMethod("init", Object.class)
-				.createMock();
-		this.mockedGroupByExtension._builder = builder;
-		mockInit();
-		EasyMock.replay(this.mockedGroupByExtension);
-	}
-
-	private void mockInit() {
-		this.mockedGroupByExtension.init(EasyMock.anyObject());
-		EasyMock.expectLastCall().andVoid();
 	}
 
 }
