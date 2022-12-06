@@ -86,7 +86,7 @@
         <cs.commons-httpclient.version>3.1</cs.commons-httpclient.version>
         <cs.commons-io.version>2.6</cs.commons-io.version>
         <cs.commons-lang3.version>3.6</cs.commons-lang3.version>
-        <cs.commons-net.version>3.6</cs.commons-net.version>
+        <cs.commons-net.version>3.9.0</cs.commons-net.version>
         <cs.commons-validator.version>1.6</cs.commons-validator.version>
         <cs.configuration.version>1.10</cs.configuration.version>
         <cs.daemon.version>1.1.0</cs.daemon.version>
